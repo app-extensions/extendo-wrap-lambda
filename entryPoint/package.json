@@ -1,0 +1,17 @@
+{
+  "name": "extendo-compute-lambda-wrapper",
+  "description": "Wrap Docker images with an extendo-compute front-end for use with lambda",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build"
+  },
+  "dependencies": {
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "repository": {
+    "url": "https://github.com/app-extensions/registry"
+  },
+  "keywords": []
+}

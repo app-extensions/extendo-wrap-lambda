@@ -1,0 +1,39 @@
+name: Build and publish extendo-compute images for Lambda
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: The base image to wrap
+        required: true
+      commandLine:
+        description: Command line for the base image
+        required: true
+      tag:
+        description: The tag to use for the published image
+        required: true
+      repository:
+        description: The image repository to publish to
+        required: false
+        default: extendo-compute
+
+jobs:
+  buildAndPublish:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ repository}}
+          IMAGE_TAG: ${{ tag }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg CMD_LINE=${{ commandLine }} --build-arg BASE_IMAGE=${{ base }} .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

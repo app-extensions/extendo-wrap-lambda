@@ -19,7 +19,8 @@ RUN apt-get update && \
     cmake \
     unzip \
     libcurl4-openssl-dev \
-    autoconf
+    autoconf \
+    libtoolize 
 
 # Copy the locatl entrypoint code into the image to build
 COPY entryPoint/* ${FUNCTION_DIR}/

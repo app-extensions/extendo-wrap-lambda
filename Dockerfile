@@ -21,7 +21,7 @@ RUN apt-get update && \
     libcurl4-openssl-dev
 
 # Copy the locatl entrypoint code into the image to build
-COPY entryPoint/* ${FUNCTION_DIR}
+COPY entryPoint/* ${FUNCTION_DIR}/
 
 # Install all the npms including the Runtime client
 WORKDIR ${FUNCTION_DIR}

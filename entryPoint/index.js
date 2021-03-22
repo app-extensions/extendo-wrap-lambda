@@ -12,7 +12,7 @@ module.exports.handler = async (event) => {
     // Grab the input and structure it as an input file
     // NOTE: here `event` is the actual payload where as in the other handlers it is the netwoek event object
     // (with all the headers etc) that has a `body` prop.
-    const { params, contextParts } = parseJSONInput(event)
+    const { params, contextParts } = event
     await fs.writeFile(inputFile, JSON.stringify(params, null, 2))
 
     // run the command line spec'd in the environment (left there when we built the image) and include any context

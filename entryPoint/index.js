@@ -1,7 +1,7 @@
 const fs = require('fs').promises
 const childProcess = require('child_process')
 
-const dataDir = '/extendo-compute'
+const dataDir = '/tmp/extendo-compute'
 const inputFile = `${dataDir}/input.json`
 const outputFile = `${dataDir}/output.json`
 const errorFile = `${dataDir}/error.json`

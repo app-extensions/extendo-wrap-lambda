@@ -36,7 +36,7 @@ FROM ${BASE_IMAGE}
 # Include global arg in this stage of the build and persist the user supplied command line in the final image
 ARG FUNCTION_DIR
 ENV CMD_LINE=${NESTED_CMD_LINE}
-RUN mkdir /extendo-compute && chmod 777 -R /extendo-compute
+# RUN mkdir /extendo-compute && chmod 777 -R /extendo-compute
 
 # Set working directory of the image to the entry point's root directory
 WORKDIR ${FUNCTION_DIR}

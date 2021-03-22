@@ -36,13 +36,9 @@ module.exports.handler = async (event) => {
     }
   } catch (error) {
     console.dir(error)
-    if (error.statusCode) return error
+    if (error.statusCode) throw error
     const output = await readFile(errorFile)
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(output || { errorType: 'Error', errorMessage: error.message })
-    }
+    throw output ? new Error(output.toString()) : error
   }
 }
 

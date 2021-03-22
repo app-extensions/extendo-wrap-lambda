@@ -14,12 +14,6 @@ module.exports.handler = async (event) => {
     // NOTE: here `event` is the actual payload where as in the other handlers it is the netwoek event object
     // (with all the headers etc) that has a `body` prop.
     const { params, contextParts } = event
-    try {
-      const stat = await fs.stat(dataDir)
-      console.log('0' + (stat.mode & parseInt('777', 8)).toString(8))
-    } catch (err) {
-      console.error(err);
-    }
     await fs.mkdir(dataDir, { recursive: true })
     await fs.writeFile(inputFile, JSON.stringify(params, null, 2))
 
@@ -57,16 +51,4 @@ async function readFile(file) {
     // await in the try so we catch any error 
     return await fs.readFile(file)
   } catch (error) { return null }
-}
-
-function parseJSONInput(source) {
-  try {
-    return JSON.parse(source)
-  } catch (error) {
-    throw {
-      statusCode: 400,
-      headers: { 'Content-Type': 'application/json' },
-      body: { errorType: 'Error', errorMessage: `Invalid body: ${source}` }
-    }
-  }
 }

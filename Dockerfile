@@ -46,6 +46,7 @@ ENV CMD_LINE=${NESTED_CMD_LINE}
 
 # Set working directory of the image to the entry point's root directory
 WORKDIR ${FUNCTION_DIR}
+RUN rm -rf /tmp/v8*
 
 # Copy in the built entrypoint code into the final image location
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}

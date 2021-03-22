@@ -20,6 +20,8 @@ module.exports.handler = async (event) => {
     // run the command line spec'd in the environment (left there when we built the image) and include any context
     const child = childProcess.exec(process.env.CMD_LINE, { env: { GITHUB_TOKEN: contextParts.token } })
     await new Promise((resolve, reject) => {
+      child.stdout.on('data', data => console.log(`child-out: ${data}`))
+      child.stderr.on('data', data => console.log(`child-err: ${data}`))
       child.on('error', error => reject(error))
       child.on('exit', code => {
         if (code !== 0) return reject(new Error('Exec exited with non-zero code: ' + code))
@@ -35,10 +37,10 @@ module.exports.handler = async (event) => {
       body: JSON.stringify(output)
     }
   } catch (error) {
-    console.dir(error)
-    if (error.statusCode) throw error
+    if (error instanceof Error) throw error
     const output = await readFile(errorFile)
-    throw output ? new Error(output.toString()) : error
+    const parsed = JSON.parse(output.toString())
+    throw parsed || error
   }
 }
 

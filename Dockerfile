@@ -13,14 +13,14 @@ ARG FUNCTION_DIR
 
 # Install aws-lambda-cpp build dependencies
 RUN apt-get update && \
-    apt-get install -y \
-    g++ \
-    make \
-    cmake \
-    unzip \
-    libcurl4-openssl-dev \
-    autoconf \
-    libtool
+  apt-get install -y \
+  g++ \
+  make \
+  cmake \
+  unzip \
+  libcurl4-openssl-dev \
+  autoconf \
+  libtool
 
 # Copy the locatl entrypoint code into the image to build
 COPY entryPoint/* ${FUNCTION_DIR}/
@@ -52,6 +52,6 @@ RUN rm -rf /tmp/v8*
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 
 # On startup run the the Runtime Interface Client and tell it about our handler 
-# ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
-ENTRYPOINT ["node", "/entryPoint/node_modules/aws-lambda-ric/lib/index.js"]
-CMD ["index.handler"]
+ENTRYPOINT ["npx", "aws-lambda-ric"]
+CMD [ "index.handler" ]
+# ENTRYPOINT ["/usr/bin/node", "/entryPoint/node_modules/aws-lambda-ric/lib/index.js", "index.handler"]

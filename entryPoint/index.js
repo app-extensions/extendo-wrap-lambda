@@ -1,3 +1,4 @@
+console.log(`line 1`)
 const fs = require('fs').promises
 const childProcess = require('child_process')
 

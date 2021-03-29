@@ -1,0 +1,9 @@
+{
+  "content": "https://raw.githubusercontent.com/app-extensions/test/main/Lorenz.ipynb",
+  "inputs": {
+    "contentType": "application/ipynb"
+  },
+  "options": {
+    "dummy": "test option"
+  }
+}

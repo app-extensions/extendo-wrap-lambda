@@ -1,5 +1,6 @@
 console.log(`line 1`)
-const fs = require('fs').promises
+const fs = require('fs')
+console.log(`line 2`)
 const childProcess = require('child_process')
 
 const dataDir = '/tmp/extendo-compute'
@@ -12,17 +13,17 @@ module.exports.handler = async (event) => {
   console.log('in handler')
   try {
     // Since Lambda can reuse containers, clean up our key files from what might have been a previous run.
-    await fs.rm(outputFile, { force: true })
-    await fs.rm(errorFile, { force: true })
+    if (fs.existsSync(outputFile)) fs.unlinkSync(outputFile)
+    if (fs.existsSync(errorFile)) fs.unlinkSync(errorFile)
     console.log('removed files')
 
     // Grab the event parts and stash for use by the target handler.
     // Note the difference here between this and Node deployed in a zip. 
     // See https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/17
     const { params, contextParts } = event
-    await fs.mkdir(dataDir, { recursive: true })
+    fs.mkdirSync(dataDir, { recursive: true })
     console.log('between mkdir and write input file')
-    await fs.writeFile(inputFile, JSON.stringify(params, null, 2))
+    fs.writeFileSync(inputFile, JSON.stringify(params, null, 2))
 
     console.log('about to exec')
     console.log (`cmd: ${process.env.CMD_LINE}`)
@@ -45,7 +46,7 @@ module.exports.handler = async (event) => {
     // Grab the output and return it as an object. 
     // Note the difference here between this and Node deployed in a zip. 
     // See https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/17
-    const output = await fs.readFile(outputFile)
+    const output = fs.readFileSync(outputFile)
     console.log(`read outputFile and returning : ${output.slice(0,1000)}`)
     return JSON.parse(output)
   } catch (error) {
@@ -53,7 +54,7 @@ module.exports.handler = async (event) => {
     if (error instanceof Error) throw error
     try {
       // See if the nested handler left us an error file. If so, re throw whatever they left 
-      const output = await fs.readFile(errorFile)
+      const output = fs.readFileSync(errorFile)
       console.log(`Got error file : ${output}`)
       throw JSON.parse(output)
     } catch (err) {

@@ -1,4 +1,4 @@
-console.log(`line 1`)
+console.log(`line 1a`)
 const fs = require('fs')
 console.log(`line 2`)
 const childProcess = require('child_process')

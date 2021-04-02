@@ -17,17 +17,15 @@ module.exports.handler = async (event) => {
     if (fs.existsSync(errorFile)) fs.unlinkSync(errorFile)
     console.log('removed files')
 
-    // Grab the event parts and stash for use by the target handler.
-    // Note the difference here between this and Node deployed in a zip. 
-    // See https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/17
     const { params, contextParts } = event
+    const data = { ...params, context: { target: contextParts.target } }
     fs.mkdirSync(dataDir, { recursive: true })
     console.log('between mkdir and write input file')
-    fs.writeFileSync(inputFile, JSON.stringify(params, null, 2))
+    fs.writeFileSync(inputFile, JSON.stringify(data, null, 2))
 
     const token = contextParts.token
     // run the command line spec'd in the environment (left there when we built the image) and include any context
-    const child = childProcess.exec(process.env.CMD_LINE, { env: {...process.env, GITHUB_TOKEN: contextParts.token } })
+    const child = childProcess.exec(process.env.CMD_LINE, { env: { ...process.env, GITHUB_TOKEN: contextParts.token } })
     await new Promise((resolve, reject) => {
       child.stdout.on('data', data => console.log(`child-out: ${data}`))
       child.stderr.on('data', data => console.log(`child-err: ${data}`))
@@ -45,7 +43,7 @@ module.exports.handler = async (event) => {
     // Note the difference here between this and Node deployed in a zip. 
     // See https://github.com/aws/aws-lambda-nodejs-runtime-interface-client/issues/17
     const output = fs.readFileSync(outputFile)
-    console.log(`read outputFile and returning : ${output.slice(0,1000)}`)
+    console.log(`read outputFile and returning : ${output.slice(0, 1000)}`)
     return JSON.parse(output)
   } catch (error) {
     // rethrow if it's already an error. Likely means that it happened in this wrapper
